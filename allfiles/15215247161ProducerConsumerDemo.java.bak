@@ -1,0 +1,78 @@
+/*refer :https://en.wikipedia.org/wiki/Producer%E2%80%93consumer_problem#Using_semaphores*/
+
+/*all the variable names are taken from above link so it will be easy to understand*/
+
+/*For overflow producer will wait
+and for underflow consumer will wait
+*??Not possible to show it??*/
+
+/*NOTE:If you want you can make methods for all the acquire and release
+eg
+ProducerConsumerDemo::acquireEmptyCount();*/
+import java.util.concurrent.Semaphore;
+import java.util.*;
+
+
+class ProducerConsumerDemo{
+
+	final static int max_buffer_size=100;
+
+	int current_buffer_size;
+
+	
+	Semaphore buffer_mutex;
+	Semaphore fillCount;
+	Semaphore emptyCount;
+
+	Producer p1,p2;
+	Consumer c1,c2;/*c3,c4,c5,c6;*/
+
+
+
+	ProducerConsumerDemo(){
+		try{
+			/*Initialize Section*/
+			current_buffer_size=0;
+
+			buffer_mutex=new Semaphore(1,true);
+			fillCount=new Semaphore(0,true);
+			emptyCount=new Semaphore(max_buffer_size,true);
+
+
+			p1=new Producer(this,"p1");
+			c1=new Consumer(this,"c1");
+			p2=new Producer(this,"p2");
+			c2=new Consumer(this,"c2");
+			c3=new Consumer(this,"c3");
+			c4=new Consumer(this,"c4");
+			c5=new Consumer(this,"c5");
+			c6=new Consumer(this,"c6");
+
+			/*End of Initialize Section*/
+
+			p1.start();
+			Thread.sleep(100);
+			c1.start();
+			p2.start();
+			Thread.sleep(200);
+			c2.start();
+			
+			// c3.start();
+			// c4.start();c5.start();c6.start();
+			
+
+
+		}catch(Exception ie){
+			System.out.println("InterruptedException Occured"+ie);
+		}
+	}
+
+	public static void main(String args[]){
+		try{
+			new ProducerConsumerDemo();
+		}catch(Exception e){
+			System.out.println("Some kind of Exception"+e);
+		}
+		
+	}
+}
